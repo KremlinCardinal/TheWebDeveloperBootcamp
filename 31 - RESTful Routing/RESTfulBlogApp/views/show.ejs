@@ -1,0 +1,20 @@
+<%- include("partials/header") %>
+
+<div class="ui main text container segment">
+    <div class="ui huge header"><%= blog.title %></div>
+    <div class="ui top attached">
+        <div class="item">
+            <img class="ui centered rounded image" src="<%= blog.image %>" alt="">
+            <div class="content">
+                <span><%= blog.created.toDateString() %></span>
+            </div>
+            <div class="description">
+                <p><%-  blog.body %></p><!-- Yes, I know allowing HTML is dangerous. It will be fixed in teh future. -->
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<%- include("partials/footer") %>
