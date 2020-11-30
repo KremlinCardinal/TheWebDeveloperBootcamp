@@ -2,6 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const app = express();
 
+const AppError = require('./AppError');
+
 // app.use(morgan('dev'));
 
 app.use((req, res, next) => {
@@ -26,6 +28,7 @@ app.get('/dogs', (req, res) => {
 });
 
 app.get('/error', (req, res) => {
+    // throw new AppError('not found', 404);
     chicken.fly();
 });
 
@@ -34,10 +37,8 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-    console.log('********************************');
-    console.log('***********ERROR****************');
-    console.log('********************************');
-    next(err);
+    const { status = 500, message = 'Something went wrong' } = err;
+    res.status(status).send(message);
 });
 
 app.listen(3000, () => {
