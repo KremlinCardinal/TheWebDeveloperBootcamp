@@ -38,16 +38,20 @@ app.get('/products', async (req, res) => {
 });
 
 app.get('/products/new', (req, res) => {
-    throw new AppError('Not allowed', 401);
+    // throw new AppError('Not allowed', 401);
     res.render('products/new', { categories });
 });
 
-app.post('/products', async (req, res) => {
-    const newProduct = new Product(req.body);
-    await newProduct.save();
-    console.log(newProduct);
-    res.redirect(`/products/${newProduct._id}`);
-})
+app.post('/products', async (req, res, next) => {
+    try {
+        const newProduct = new Product(req.body);
+        await newProduct.save();
+        console.log(newProduct);
+        res.redirect(`/products/${newProduct._id}`);
+    } catch (e) {
+        next(e);
+    }
+});
 
 app.get('/products/:id', async (req, res, next) => {
     const { id } = req.params;
@@ -64,11 +68,15 @@ app.get('/products/:id/edit', async (req, res) => {
     res.render('products/edit', { product, categories });
 });
 
-app.put('/products/:id', async (req, res) => {
-    const { id } = req.params;
-    const product = await Product.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
+app.put('/products/:id', async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const product = await Product.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
 
-    res.redirect(`/products/${product._id}`);
+        res.redirect(`/products/${product._id}`);
+    } catch (e) {
+        next(e);
+    }
 });
 
 app.delete('/products/:id', async (req, res) => {
