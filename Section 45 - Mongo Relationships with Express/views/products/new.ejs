@@ -9,7 +9,7 @@
 
 <body>
     <h1>Add a product</h1>
-    <form action="/products" method="POST">
+    <form action="/farms/<%= id %>/products" method="POST">
         <label for="name">Product name</label>
         <input id="name" type="text" name="name" placeholder="Product name">
         <label for="price">Price (unit)</label>
