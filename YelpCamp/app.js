@@ -12,6 +12,7 @@ const User = require('./models/user');
 
 const campgrounds = require('./routes/campgrounds');
 const reviews = require('./routes/reviews');
+const users = require('./routes/users');
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
     useNewUrlParser: true,
@@ -65,6 +66,7 @@ app.use((req, res, next) => {
 
 app.use('/campgrounds', campgrounds);
 app.use('/campgrounds/:id/reviews', reviews);
+app.use('/', users);
 
 /* ************** */
 /*     ROUTES     */
