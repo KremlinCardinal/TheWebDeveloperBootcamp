@@ -1,9 +1,9 @@
 const campgroundsObj = JSON.parse(campgrounds);
 
 mapboxgl.accessToken = mapToken;
-var map = new mapboxgl.Map({
+const map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/mapbox/dark-v10',
+    style: 'mapbox://styles/mapbox/light-v10',
     center: [-103.59179687498357, 40.66995747013945],
     zoom: 3
 });
@@ -36,20 +36,20 @@ map.on('load', function () {
             'circle-color': [
                 'step',
                 ['get', 'point_count'],
-                '#51bbd6',
-                100,
-                '#f1f075',
-                750,
-                '#f28cb1'
+                '#00bcd4',
+                10,
+                '#2196f3',
+                30,
+                '#3f5185'
             ],
             'circle-radius': [
                 'step',
                 ['get', 'point_count'],
+                15,
+                10,
                 20,
-                100,
                 30,
-                750,
-                40
+                25
             ]
         }
     });
@@ -81,10 +81,10 @@ map.on('load', function () {
 
     // inspect a cluster on click
     map.on('click', 'clusters', function (e) {
-        var features = map.queryRenderedFeatures(e.point, {
+        const features = map.queryRenderedFeatures(e.point, {
             layers: ['clusters']
         });
-        var clusterId = features[0].properties.cluster_id;
+        const clusterId = features[0].properties.cluster_id;
         map.getSource('campgrounds').getClusterExpansionZoom(
             clusterId,
             function (err, zoom) {
@@ -103,15 +103,21 @@ map.on('load', function () {
     // the location of the feature, with
     // description HTML from its properties.
     map.on('click', 'unclustered-point', function (e) {
-        var coordinates = e.features[0].geometry.coordinates.slice();
-        var mag = e.features[0].properties.mag;
-        var tsunami;
+        const coordinates = e.features[0].geometry.coordinates.slice();
 
-        if (e.features[0].properties.tsunami === 1) {
-            tsunami = 'yes';
-        } else {
-            tsunami = 'no';
-        }
+        const { id, title, description } = e.features[0].properties;
+
+        const popUpMarkup = `
+        <strong>
+            <a href="/campgrounds/${id}">
+                ${title}
+            </a>
+        </strong>
+        <p>
+            ${description}...
+        </p>`;
+
+
 
         // Ensure that if the map is zoomed out such that
         // multiple copies of the feature are visible, the
@@ -122,9 +128,7 @@ map.on('load', function () {
 
         new mapboxgl.Popup()
             .setLngLat(coordinates)
-            .setHTML(
-                'magnitude: ' + mag + '<br>Was there a tsunami?: ' + tsunami
-            )
+            .setHTML(popUpMarkup)
             .addTo(map);
     });
 
